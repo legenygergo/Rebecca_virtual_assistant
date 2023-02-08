@@ -1,0 +1,91 @@
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+import subprocess as sp
+
+listener = sr.Recognizer() #call speach recognition
+engine = pyttsx3.init()
+
+def talk(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def take_command():
+    try:
+        with sr.Microphone() as source:
+            print("I'm listening...")
+            voice = listener.listen(source)
+            command = listener.recognize_google(voice)
+            command = command.lower()
+            print(command)
+            if 'rebecca' in command or 'tesco' in command or 'tobacco' in command: #sometimes when I say Rebecca
+                if 'rebecca' in command:                                           #it hears tesco or tobacco
+                    command=command.replace('rebecca', '')
+                    print(command)
+                    return command
+
+                elif 'tesco' in command:
+                    command = command.replace('tesco', '')
+                    print(command)
+                    return command
+
+                elif 'tobacco' in command:
+                    command = command.replace('tobacco', '')
+                    print(command)
+                    return command
+
+    except:
+        command = None
+        return command
+
+
+def run_rebecca():
+    command=take_command()
+    if command is not None and 'how are you' in command:
+        talk("fine gary, and you?")
+
+    elif command is not None and 'play' in command:
+        song=command.replace('play', '', 1)
+        talk('playing' + song)
+        pywhatkit.playonyt(song)
+
+    elif command is not None and 'time' in command:
+        time= datetime.datetime.now().strftime('%H:%M')
+        print(time)
+        talk('the current time is' + time)
+
+    elif command is not None and ('wikipedia' in command or 'who  is' in command):
+        if 'wikipedia' in command:
+            person = command.replace('wikipedia', "")
+            information = wikipedia.summary(person)
+            talk(information)
+        else:
+            person = command.replace('who the heck is', '')
+            information = wikipedia.summary(person)
+            talk(information)
+
+    elif command is not None and 'joke' in command:
+        talk(pyjokes.get_joke())
+
+    elif command is not None and 'open' in command:
+        talk("I'm on it!")
+        if 'calculator' in command:
+            sp.call('calc.exe')
+        elif 'notepad' in command:
+            sp.call('notepad.exe')
+        elif 'minecraft' in command:
+            sp.call("C://Users//win10//AppData//Roaming//.minecraft//TLauncher.exe")
+        elif 'cyber' in command:
+            sp.call('E://Games//Cyberpunk 2077//REDprelauncher.exe')
+        elif 'python' in command:
+            sp.call('C://Program Files//JetBrains//PyCharm Community Edition 2020.2//bin//pycharm64.exe')
+
+    else:
+        talk('repeat please')
+
+
+talk('hello gary! what can i do for you?')
+run_rebecca()
